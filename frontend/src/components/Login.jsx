@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
 const GRADES = ["6", "7", "8", "9", "10", "11", "12"];
+const BOARDS = ["State Board", "CBSE", "ICSE"];
 
 function Login({ onLogin }) {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("8");
+  const [board, setBoard] = useState("CBSE");
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
@@ -13,7 +15,7 @@ function Login({ onLogin }) {
       setError("Please enter your name.");
       return;
     }
-    const student = { name: name.trim(), grade };
+    const student = { name: name.trim(), grade, board };
     localStorage.setItem("samjho_student", JSON.stringify(student));
     onLogin(student);
   };
@@ -40,6 +42,16 @@ function Login({ onLogin }) {
               {GRADES.map((g) => (
                 <option key={g} value={g}>
                   Grade {g}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Your Board
+            <select value={board} onChange={(e) => setBoard(e.target.value)}>
+              {BOARDS.map((b) => (
+                <option key={b} value={b}>
+                  {b}
                 </option>
               ))}
             </select>
