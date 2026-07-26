@@ -7,6 +7,7 @@ const SUBJECTS_BY_BOARD = {
 };
 
 const LANGUAGES = [
+  { label: "English", speechCode: "en-IN" },
   { label: "Kannada", speechCode: "kn-IN" },
   { label: "Hindi", speechCode: "hi-IN" },
 ];
@@ -17,7 +18,7 @@ function DoubtForm({ student, onResult }) {
   const [customSubject, setCustomSubject] = useState("");
   const [doubtText, setDoubtText] = useState("");
   const [language, setLanguage] = useState(
-    () => localStorage.getItem("samjho_language") || "Kannada"
+    () => localStorage.getItem("samjho_language") || "English"
   );
   const [isListening, setIsListening] = useState(false);
   const [loading, setLoading] = useState(false);
