@@ -34,9 +34,30 @@ function Dashboard({ studentName }) {
     return <p className="empty-text">No doubts logged yet for {studentName}.</p>;
   }
 
+  const totalResolved = data.topics.reduce((sum, t) => sum + t.resolved, 0);
+  const masteredTopics = data.topics.filter((t) => t.masteryPercent === 100).length;
+
+  const badges = [];
+  if (totalResolved >= 1) badges.push({ icon: "🌱", label: "First Step" });
+  if (totalResolved >= 5) badges.push({ icon: "📚", label: "Steady Learner" });
+  if (totalResolved >= 10) badges.push({ icon: "⭐", label: "Doubt Buster" });
+  if (masteredTopics >= 1) badges.push({ icon: "🏆", label: "Topic Master" });
+  if (masteredTopics >= 3) badges.push({ icon: "👑", label: "Concept Champion" });
+
   return (
     <div className="dashboard">
-      <h3>Your Concept Mastery</h3>
+      <div className="dashboard-title-row">
+        <h3>Your Concept Mastery</h3>
+        {badges.length > 0 && (
+          <span className="badges-inline">
+            {badges.map((b) => (
+              <span className="badge-chip" key={b.label}>
+                {b.icon} {b.label}
+              </span>
+            ))}
+          </span>
+        )}
+      </div>
       <p className="dashboard-sub">{data.totalSessions} doubt(s) logged so far</p>
 
       {data.topics.map((t) => (
