@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
 
 Act as a patient tutor for underserved/first-generation learners. Do three things:
 1. Diagnose the underlying concept gap causing this doubt (one short sentence).
-2. Write a SHORT explanation suited to grade "${gradeLevel}" — max 60 words. Do NOT write a long paragraph. Break it into short points (2-4 bullet-style sentences, each on its own idea). Use very simple everyday words. If the concept is visual or spatial (shapes, fractions, processes, cycles, number lines, etc.), include one simple text-based diagram using arrows, dashes, or a small ASCII sketch to illustrate it — only if it genuinely helps, otherwise skip it.
+2. Write a clear explanation suited to grade "${gradeLevel}", broken into short points (not one dense paragraph). Prioritize the student actually understanding over being brief — do not cut it short. Use only simple, everyday words a child uses in daily talk — avoid difficult or bookish words completely; if a hard word is unavoidable, explain it in one simple phrase right after. If this is a grammar, spelling, or language-rule doubt, give AT LEAST 4-5 example sentences showing correct usage, with common mistakes shown next to the correct form, so the rule is completely unmistakable. For other subjects, give at least 2-3 concrete examples. If the concept is visual or spatial (shapes, fractions, processes, cycles, number lines, etc.), include one simple text-based diagram using arrows, dashes, or a small ASCII sketch to illustrate it.
 3. Write 2 short practice questions (multiple choice, 4 options each) that test if the gap is closed.
 4. Give one short topic tag (2-3 words) that categorizes this doubt, e.g. "Fractions", "Newton's Laws".
 
@@ -101,7 +101,7 @@ router.post("/:id/reexplain", async (req, res) => {
 They were already given this explanation but said they still did not understand it:
 "${session.explanation}"
 
-Write a COMPLETELY DIFFERENT, even simpler explanation. Use a different everyday analogy or a step-by-step breakdown than before. Max 50 words, broken into short points, very plain language, as if explaining to a friend, in ${session.explanationLanguage}. If a simple text-based diagram (arrows, dashes, small sketch) would help, include one.
+Write a COMPLETELY DIFFERENT, even simpler explanation than before — use a new everyday analogy or a step-by-step breakdown. Use only very simple, everyday words (avoid any bookish or technical terms). Prioritize the student truly understanding over being short — do not worry about length. Include 2-4 concrete examples (if this is a grammar/language doubt, include several right-vs-wrong example sentences). Break it into short points, as if explaining patiently to a friend, in ${session.explanationLanguage}. If a simple text-based diagram (arrows, dashes, small sketch) would help, include one.
 
 Respond with ONLY the explanation text. No JSON, no preamble, no markdown.`;
 

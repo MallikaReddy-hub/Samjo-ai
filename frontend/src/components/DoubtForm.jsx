@@ -1,20 +1,23 @@
 import React, { useState, useRef } from "react";
 
-const SUBJECTS = ["Math", "Science", "English", "Social Studies", "Computer Science"];
+const SUBJECTS_BY_BOARD = {
+  CBSE: ["Math", "Science", "English", "Social Science", "Hindi", "Kannada", "Computer Science"],
+  ICSE: ["Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi", "Kannada", "History & Civics", "Geography", "Computer Applications"],
+  "State Board": ["Math", "Science", "Social Science", "English", "Kannada", "Hindi", "Computer Science"],
+};
 
 const LANGUAGES = [
-  { label: "English", speechCode: "en-IN" },
   { label: "Kannada", speechCode: "kn-IN" },
-  { label: "Telugu", speechCode: "te-IN" },
   { label: "Hindi", speechCode: "hi-IN" },
-  { label: "Tamil", speechCode: "ta-IN" },
 ];
 
 function DoubtForm({ student, onResult }) {
-  const [subject, setSubject] = useState("Math");
+  const boardSubjects = SUBJECTS_BY_BOARD[student.board] || SUBJECTS_BY_BOARD["State Board"];
+  const [subject, setSubject] = useState(boardSubjects[0]);
+  const [customSubject, setCustomSubject] = useState("");
   const [doubtText, setDoubtText] = useState("");
   const [language, setLanguage] = useState(
-    () => localStorage.getItem("samjho_language") || "English"
+    () => localStorage.getItem("samjho_language") || "Kannada"
   );
   const [isListening, setIsListening] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -73,6 +76,13 @@ function DoubtForm({ student, onResult }) {
       return;
     }
 
+    const finalSubject = subject === "Other" ? customSubject.trim() : subject;
+
+    if (subject === "Other" && !finalSubject) {
+      setError("Please type your subject name.");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch(
@@ -83,7 +93,7 @@ function DoubtForm({ student, onResult }) {
           body: JSON.stringify({
             studentName: student.name,
             gradeLevel: student.grade,
-            subject,
+            subject: finalSubject,
             doubtText,
             explanationLanguage: language,
           }),
@@ -112,13 +122,26 @@ function DoubtForm({ student, onResult }) {
         <label>
           Subject
           <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-            {SUBJECTS.map((s) => (
+            {boardSubjects.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
             ))}
+            <option value="Other">Other (type your own)</option>
           </select>
         </label>
+
+        {subject === "Other" && (
+          <label>
+            Type Subject
+            <input
+              type="text"
+              value={customSubject}
+              onChange={(e) => setCustomSubject(e.target.value)}
+              placeholder="e.g. Sanskrit"
+            />
+          </label>
+        )}
 
         <label>
           Explain in

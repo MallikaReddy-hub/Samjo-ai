@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 function ResultCard({ session, onResolved }) {
   const [understood, setUnderstood] = useState(null);
-  const [simplified, setSimplified] = useState(session.simplifiedExplanation || "");
+  const [simplified, setSimplified] = useState("");
+  const [attemptCount, setAttemptCount] = useState(0);
   const [loadingSimplified, setLoadingSimplified] = useState(false);
   const [answers, setAnswers] = useState({});
   const [checked, setChecked] = useState(false);
@@ -13,9 +14,8 @@ function ResultCard({ session, onResolved }) {
     setUnderstood(true);
   };
 
-  const handleNotUnderstood = async () => {
+  const fetchSimplerExplanation = async () => {
     setUnderstood(false);
-    if (simplified) return;
     setLoadingSimplified(true);
     try {
       const res = await fetch(
@@ -25,9 +25,10 @@ function ResultCard({ session, onResolved }) {
       const data = await res.json();
       if (res.ok) {
         setSimplified(data.simplifiedExplanation);
+        setAttemptCount((c) => c + 1);
       }
     } catch (err) {
-      // silent fail, student can still try practice questions
+      // silent fail, student can still try practice questions or video
     } finally {
       setLoadingSimplified(false);
     }
@@ -84,7 +85,7 @@ function ResultCard({ session, onResolved }) {
             <button className="submit-btn" onClick={handleUnderstood}>
               Yes, got it
             </button>
-            <button className="mic-btn" onClick={handleNotUnderstood}>
+            <button className="mic-btn" onClick={fetchSimplerExplanation}>
               Not yet
             </button>
           </div>
@@ -93,21 +94,29 @@ function ResultCard({ session, onResolved }) {
 
       {understood === false && (
         <div className="simplified-block fade-in">
-          <h3>Let's try it a simpler way</h3>
+          <h3>Let's try it a simpler way{attemptCount > 1 ? ` (try ${attemptCount})` : ""}</h3>
           {loadingSimplified ? (
             <p>Thinking of a simpler way to explain...</p>
           ) : (
-            <>
-              <p>{simplified}</p>
-              <button className="submit-btn" onClick={() => setUnderstood(true)}>
-                Okay, now I understand
-              </button>
-            </>
+            <p>{simplified}</p>
           )}
+
+          <div className="understood-buttons" style={{ marginTop: "12px" }}>
+            <button className="submit-btn" onClick={() => setUnderstood(true)}>
+              Okay, now I understand
+            </button>
+            <button
+              className="mic-btn"
+              onClick={fetchSimplerExplanation}
+              disabled={loadingSimplified}
+            >
+              Still not clear — try again
+            </button>
+          </div>
 
           {!showVideos ? (
             <button className="mic-btn" onClick={handleShowVideos} style={{ marginTop: "10px" }}>
-              😕 Still stuck — show me a video
+              😕 Prefer a video instead?
             </button>
           ) : (
             <div className="video-help">
