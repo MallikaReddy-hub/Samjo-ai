@@ -1,5 +1,20 @@
 import React, { useState } from "react";
 
+const SPEECH_LANG_MAP = {
+  English: "en-IN",
+  Kannada: "kn-IN",
+  Hindi: "hi-IN",
+};
+
+function speakText(text, language) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = SPEECH_LANG_MAP[language] || "en-IN";
+  utterance.rate = 0.9;
+  window.speechSynthesis.speak(utterance);
+}
+
 function ResultCard({ session, onResolved }) {
   const [understood, setUnderstood] = useState(null);
   const [simplified, setSimplified] = useState("");
@@ -77,6 +92,22 @@ function ResultCard({ session, onResolved }) {
 
       <h3>Explanation</h3>
       <p>{session.explanation}</p>
+      <button
+        className="mic-btn speak-btn"
+        onClick={() => speakText(session.explanation, session.explanationLanguage)}
+      >
+        🔊 Read aloud
+      </button>
+      
+        className="mic-btn speak-btn whatsapp-share"
+        href={`https://wa.me/?text=${encodeURIComponent(
+          `${session.studentName}'s doubt (${session.subject}, Grade ${session.gradeLevel}):\n\n"${session.doubtText}"\n\nExplanation:\n${session.explanation}`
+        )}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        📤 Share with parent/teacher
+      </a>
 
       {understood === null && (
         <div className="understood-check">
@@ -98,7 +129,15 @@ function ResultCard({ session, onResolved }) {
           {loadingSimplified ? (
             <p>Thinking of a simpler way to explain...</p>
           ) : (
-            <p>{simplified}</p>
+            <>
+              <p>{simplified}</p>
+              <button
+                className="mic-btn speak-btn"
+                onClick={() => speakText(simplified, session.explanationLanguage)}
+              >
+                🔊 Read aloud
+              </button>
+            </>
           )}
 
           <div className="understood-buttons" style={{ marginTop: "12px" }}>
@@ -123,7 +162,7 @@ function ResultCard({ session, onResolved }) {
               <p>
                 Here are video explanations for <strong>{session.topicTag}</strong>:
               </p>
-              <a
+              
                 className="video-link-btn"
                 href={youtubeSearchUrl}
                 target="_blank"
