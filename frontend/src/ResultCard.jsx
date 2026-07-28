@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 
 const SPEECH_LANG_MAP = {
   English: "en-IN",
@@ -83,14 +83,6 @@ function ResultCard({ session, onResolved }) {
   );
   const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${videoSearchQuery}`;
 
-  const shareText = `${session.studentName} doubt (${session.subject}, Grade ${session.gradeLevel}):
-
-Q: ${session.doubtText}
-
-Explanation:
-${session.explanation}`;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-
   return (
     <div className="result-card fade-in">
       <span className="topic-tag">{session.topicTag}</span>
@@ -104,15 +96,17 @@ ${session.explanation}`;
         className="mic-btn speak-btn"
         onClick={() => speakText(session.explanation, session.explanationLanguage)}
       >
-        [Read aloud]
+        🔊 Read aloud
       </button>
-      <a
+      
         className="mic-btn speak-btn whatsapp-share"
-        href={whatsappUrl}
+        href={`https://wa.me/?text=${encodeURIComponent(
+          `${session.studentName}'s doubt (${session.subject}, Grade ${session.gradeLevel}):\n\n"${session.doubtText}"\n\nExplanation:\n${session.explanation}`
+        )}`}
         target="_blank"
         rel="noopener noreferrer"
       >
-        [Share with parent/teacher]
+        📤 Share with parent/teacher
       </a>
 
       {understood === null && (
@@ -141,7 +135,7 @@ ${session.explanation}`;
                 className="mic-btn speak-btn"
                 onClick={() => speakText(simplified, session.explanationLanguage)}
               >
-                [Read aloud]
+                🔊 Read aloud
               </button>
             </>
           )}
@@ -155,26 +149,26 @@ ${session.explanation}`;
               onClick={fetchSimplerExplanation}
               disabled={loadingSimplified}
             >
-              Still not clear - try again
+              Still not clear — try again
             </button>
           </div>
 
           {!showVideos ? (
             <button className="mic-btn" onClick={handleShowVideos} style={{ marginTop: "10px" }}>
-              [Prefer a video instead?]
+              😕 Prefer a video instead?
             </button>
           ) : (
             <div className="video-help">
               <p>
                 Here are video explanations for <strong>{session.topicTag}</strong>:
               </p>
-              <a
+              
                 className="video-link-btn"
                 href={youtubeSearchUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                [Watch videos on YouTube]
+                ▶ Watch videos on YouTube
               </a>
             </div>
           )}
@@ -221,7 +215,7 @@ ${session.explanation}`;
               {marking
                 ? "Saving your progress..."
                 : session.practiceQuestions.every((q, i) => answers[i] === q.correctAnswer)
-                ? "Nice work - this topic is marked as resolved in your dashboard."
+                ? "Nice work — this topic is marked as resolved in your dashboard."
                 : "Some answers need another look. Re-read the explanation above and try the next doubt when ready."}
             </p>
           )}

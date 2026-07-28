@@ -83,13 +83,17 @@ function ResultCard({ session, onResolved }) {
   );
   const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${videoSearchQuery}`;
 
-  const shareText = `${session.studentName} doubt (${session.subject}, Grade ${session.gradeLevel}):
-
-Q: ${session.doubtText}
-
-Explanation:
-${session.explanation}`;
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+  const shareText =
+    session.studentName +
+    "'s doubt (" +
+    session.subject +
+    ", Grade " +
+    session.gradeLevel +
+    "):\n\n\"" +
+    session.doubtText +
+    "\"\n\nExplanation:\n" +
+    session.explanation;
+  const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(shareText);
 
   return (
     <div className="result-card fade-in">
@@ -106,7 +110,7 @@ ${session.explanation}`;
       >
         [Read aloud]
       </button>
-      <a
+      
         className="mic-btn speak-btn whatsapp-share"
         href={whatsappUrl}
         target="_blank"
@@ -168,7 +172,7 @@ ${session.explanation}`;
               <p>
                 Here are video explanations for <strong>{session.topicTag}</strong>:
               </p>
-              <a
+              
                 className="video-link-btn"
                 href={youtubeSearchUrl}
                 target="_blank"
